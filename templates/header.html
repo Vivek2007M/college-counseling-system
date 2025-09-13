@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CollegeMatch - Find Your Perfect College</title>
+    <meta name="description" content="AI-powered college matching platform for Indian students. Find your perfect college based on percentiles, category, and preferences.">
+    <meta name="keywords" content="college admission, JEE, NEET, college matching, education, India">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/static/css/styles.css" as="style">
+    <link rel="preload" href="/static/javascript/script.js" as="script">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z'/></svg>">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-layer layer-1"></div>
+        <div class="bg-layer layer-2"></div>
+        <div class="bg-layer layer-3"></div>
+    </div>
+    
+    <!-- Particle System -->
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+    
+    <!-- Cursor Trail -->
+    <div id="cursor-trail" class="cursor-trail"></div>
+    <!-- Loading screen removed -->
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <div class="logo" data-aos="fade-right">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 7h6M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">CollegeMatch</span>
+            </div>
+            
+            <ul class="nav-links" data-aos="fade-down" data-aos-delay="200">
+                <li><a href="{% url 'HomePage' %}" class="nav-link">Home</a></li>
+                <li><a href="{% url 'HomePage' %}#features" class="nav-link">Features</a></li>
+                <li><a href="{% url 'HomePage' %}#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="{% url 'HomePage' %}#testimonials" class="nav-link">Success Stories</a></li>
+                <li><a href="{% url 'HomePage' %}#contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            {# snippet to place in header.html: show login/register or profile dropdown #}
+            <div class="nav-buttons">
+            {% if user.is_authenticated %}
+                                <div class="profile-area">
+                                    <button id="profileBtn" class="profile-btn" type="button" aria-expanded="false">
+                                        <img src="{% static 'images\user-sign-icon-person-symbol-260nw-211765075.webp' %}" alt="avatar">
+                                        <span>{{ user.first_name|default:user.username }}</span>
+                                    </button>
+                                    <div id="profileDropdown" class="profile-dropdown">
+                                        <div class="profile-name">{{ user.get_full_name }}</div>
+                                        <div class="profile-email">{{ user.email }}</div>
+                                        <div class="profile-phone">{{ user.profile.phone }}</div>
+                                        <div class="profile-divider"></div>
+                                        <a href="{% url 'profile' %}">Profile</a>
+                                        <form method="post" action="{% url 'logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit">Logout</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                <script>
+                                (function(){
+                                    const btn = document.getElementById('profileBtn');
+                                    const dd  = document.getElementById('profileDropdown');
+                                    if (!btn) return;
+                                    btn.addEventListener('click', function(e){
+                                        e.stopPropagation();
+                                        dd.classList.toggle('active');
+                                    });
+                                    document.addEventListener('click', function(){ dd.classList.remove('active'); });
+                                })();
+                </script>
+
+            {% else %}
+                <a href="{% url 'login_page' %}" class="btn-login">Login</a>
+                <a href="{% url 'register_page' %}" class="btn-register">Register</a>
+            {% endif %}
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+
+<!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <a href="#home" class="mobile-link">Home</a>
+                <a href="#features" class="mobile-link">Features</a>
+                <a href="#how-it-works" class="mobile-link">How It Works</a>
+                <a href="#testimonials" class="mobile-link">Success Stories</a>
+                <a href="#contact" class="mobile-link">Contact</a>
+                <div class="mobile-buttons">
+                    <button class="btn btn-ghost">Login</button>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </nav>

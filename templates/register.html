@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - CollegeMatch</title>
+    <meta name="description" content="Create your CollegeMatch account and start finding your perfect college">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/static/css/styles.css" as="style">
+    <link rel="preload" href="/static/css/auth-styles.css" as="style">
+    <link rel="preload" href="/static/javascript/script.js" as="script">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/auth-styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z'/></svg>">
+</head>
+<body class="auth-body">
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-layer layer-1"></div>
+        <div class="bg-layer layer-2"></div>
+        <div class="bg-layer layer-3"></div>
+    </div>
+    
+    <!-- Particle System -->
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+    
+    <!-- Loading Screen -->
+    <!-- Loading screen removed to ensure form is visible without JavaScript -->
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar auth-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo" data-aos="fade-right">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 7h6M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">CollegeMatch</span>
+            </a>
+            
+            <div class="nav-buttons" data-aos="fade-left">
+                <a href="{% url 'login_page' %}" class="btn btn-ghost">Already have an account?</a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="auth-container">
+            <!-- Left Side - Form -->
+            <div class="auth-form-section" data-aos="fade-right">
+                <div class="auth-form-container">
+                    <div class="auth-header">
+                        <h1 class="auth-title">Create Your Account</h1>
+                        <p class="auth-subtitle">Join thousands of students finding their perfect college match</p>
+                    </div>
+
+                    {% if messages %}
+                        <div class="messages-block">
+                        {% for msg in messages %}
+                            <div class="alert {{ msg.tags }}">{{ msg }}</div>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+
+                   <form class="auth-form" id="registerForm" method="post" action="{% url 'register_page' %}">
+                        <!-- Django CSRF Token (will be added by Django) -->
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name" class="form-label">
+                                    <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    First Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="first_name" 
+                                    name="first_name" 
+                                    class="form-input" 
+                                    placeholder="Enter your first name"
+                                    required
+                                    autocomplete="given-name"
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="last_name" class="form-label">
+                                    <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Last Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="last_name" 
+                                    name="last_name" 
+                                    class="form-input" 
+                                    placeholder="Enter your last name"
+                                    required
+                                    autocomplete="family-name"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                    <path d="m2 3 10 11L22 3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Email Address
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                placeholder="Enter your email address"
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Phone Number
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="form-input" 
+                                placeholder="Enter your mobile number"
+                                required
+                                autocomplete="tel"
+                                pattern="[6-9][0-9]{9}"
+                                title="Please enter a valid 10-digit mobile number"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Password
+                                </label>
+                                <div class="password-input-container">
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        class="form-input password-input" 
+                                        placeholder="Create a strong password"
+                                        required
+                                        autocomplete="new-password"
+                                        minlength="8"
+                                    >
+                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="passwordStrength">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill"></div>
+                                    </div>
+                                    <span class="strength-text">Password strength</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password" class="form-label">
+                                    <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Confirm Password
+                                </label>
+                                <div class="password-input-container">
+                                    <input 
+                                        type="password" 
+                                        id="confirm_password" 
+                                        name="confirm_password" 
+                                        class="form-input password-input" 
+                                        placeholder="Confirm your password"
+                                        required
+                                        autocomplete="new-password"
+                                    >
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Academic Information -->
+                        <div class="form-section">
+                            <h3 class="section-title">Academic Information</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="exam_type" class="form-label">
+                                        <svg class="label-icon" viewBox="0 0 24 24" fill="none">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                        Exam Type
+                                    </label>
+                                    <select id="exam_type" name="exam_type" class="form-select" required>
+                                        <option value="">Select your exam</option>
+                                        <option value="JEE_MAIN">JEE Main</option>
+                                        <option value="JEE_ADVANCED">JEE Advanced</option>
+                                        <option value="NEET">NEET</option>
+                                        <option value="BITSAT">BITSAT</option>
+                                        <option value="MHTCET">MHT CET</option>
+                                        <option value="KCET">KCET</option>
+                                        <option value="EAMCET">EAMCET</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-text">
+                                    I agree to the 
+                                    <a href="#" class="link">Terms of Service</a> 
+                                    and 
+                                    <a href="#" class="link">Privacy Policy</a>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="newsletter" name="newsletter">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-text">
+                                    Subscribe to newsletter for college updates and admission tips
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-xl btn-glow submit-btn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Create Account
+                        </button>
+
+                        <!-- Social Registration -->
+                        <div class="social-divider">
+                            <span>or register with</span>
+                        </div>
+
+                        <div class="social-buttons">
+                            <button type="button" class="btn btn-social google-btn">
+                                <svg class="social-icon" viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                                Google
+                            </button>
+                            
+                            <button type="button" class="btn btn-social facebook-btn">
+                                <svg class="social-icon" viewBox="0 0 24 24" fill="#1877F2">
+                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                                </svg>
+                                Facebook
+                            </button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="auth-footer">
+                            <p>Already have an account? <a href="login.html" class="link">Sign in</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Side - Visual -->
+            <div class="auth-visual-section" data-aos="fade-left">
+                <div class="visual-content">
+                    <div class="visual-header">
+                        <h2 class="visual-title">Start Your Journey to Success</h2>
+                        <p class="visual-subtitle">Join thousands of students who have found their perfect college match</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">🎓</div>
+                            <div class="stat-number">2500+</div>
+                            <div class="stat-label">Colleges</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">👨‍🎓</div>
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-number">99.2%</div>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-number">3 Sec</div>
+                            <div class="stat-label">Results</div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="stars">★★★★★</div>
+                            <p>"CollegeMatch helped me find the perfect engineering college that matched my JEE score and location preferences. Got admission in my dream college!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">AR</div>
+                            <div class="author-info">
+                                <h4>Arjun Sharma</h4>
+                                <span>IIT Delhi, Computer Science</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>AI-powered college matching</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Instant results in 3 seconds</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>All categories supported</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Scripts removed to ensure no JS blocks form submission -->
+    <!-- Scripts for UI features only; no JS blocks form submission -->
+    <script src="/static/javascript/script.js"></script>
+    <script src="/static/javascript/auth-script.js"></script>
+</body>
+</html>
