@@ -5,7 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Profile
+
 from django.views.decorators.http import require_POST
+from django.core.cache import cache
 
 def register_view(request):
     if request.method == 'POST':
@@ -71,6 +73,12 @@ def login_view(request):
             return redirect('login_page')
     return render(request, 'login.html')
 
+def queries_view(request):
+    queries = cache.get('all_sql_queries', [])
+    context = {
+        'queries': queries
+    }
+    return render(request, "queries.html", context)
 
 @login_required
 def profile_view(request):
@@ -83,3 +91,5 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
     return redirect('home')
+
+
