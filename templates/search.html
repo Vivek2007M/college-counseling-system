@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Search - CollegeMatch</title>
+    <meta name="description" content="Find and compare colleges based on your preferences and percentile">
+    
+    <!-- Existing Project Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <!-- Search Page Specific Styles -->
+    <link rel="stylesheet" href="/static/css/search.css">
+    
+    <!-- Icons from Heroicons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/heroicons@1.0.6/outline/heroicons-outline.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z'/></svg>">
+</head>
+<body>
+    <!-- Include existing navbar from your project -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="logo-text">CollegeMatch</span>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="#" class="nav-link active">Search</a></li>
+                <li><a href="#" class="nav-link">Features</a></li>
+                <li><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="nav-buttons">
+                <button class="btn btn-ghost">Login</button>
+                <button class="btn btn-primary">Register</button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Search Container -->
+    <main class="search-main">
+        <!-- Search Header -->
+        <div class="search-header">
+            <div class="container">
+                <h1 class="search-title">Find Your Perfect College</h1>
+                <p class="search-subtitle">Discover colleges that match your percentile, preferences, and career goals</p>
+            </div>
+        </div>
+
+        <!-- Search Content -->
+        <div class="search-content">
+            <div class="container">
+                <div class="search-layout">
+                    <!-- Filters Sidebar -->
+                    <aside class="filters-sidebar" id="filtersSidebar">
+                        <div class="filters-header">
+                            <h2>Filters</h2>
+                            <button class="filters-reset" id="resetFilters">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                Reset All
+                            </button>
+                        </div>
+
+                        <div class="filters-content">
+                            <!-- Percentile Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Percentile</label>
+                                <div class="percentile-input-group">
+                                    <div class="percentile-slider-container">
+                                        <input type="range" id="percentileSlider" class="percentile-slider" 
+                                               min="0" max="100" value="85" step="0.1">
+                                        <div class="slider-track-fill"></div>
+                                    </div>
+                                    <div class="percentile-display">
+                                        <input type="number" id="percentileInput" class="percentile-number" 
+                                               min="0" max="100" step="0.1" value="85">
+                                        <span class="percentile-suffix">%ile</span>
+                                    </div>
+                                </div>
+                                <div class="percentile-meter" id="percentileMeter">
+                                    <svg class="meter-svg" viewBox="0 0 200 120">
+                                        <path class="meter-track" d="M 20 100 A 80 80 0 0 1 180 100" 
+                                              stroke="var(--border-primary)" stroke-width="8" fill="none"/>
+                                        <path class="meter-progress" d="M 20 100 A 80 80 0 0 1 180 100" 
+                                              stroke="url(#percentileGradient)" stroke-width="8" fill="none"/>
+                                        <defs>
+                                            <linearGradient id="percentileGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" style="stop-color:var(--primary-500)"/>
+                                                <stop offset="100%" style="stop-color:var(--secondary-500)"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div class="meter-value" id="meterValue">85%</div>
+                                </div>
+                            </div>
+
+                            <!-- Stream/Branch Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Stream/Branch</label>
+                                <div class="checkbox-group" id="streamFilters">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="computer-science" checked>
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-label">Computer Science</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="mechanical">
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-label">Mechanical Engineering</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="electrical">
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-label">Electrical Engineering</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="electronics">
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-label">Electronics & Comm.</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="civil">
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-label">Civil Engineering</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Location Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Location</label>
+                                <div class="location-input-group">
+                                    <input type="text" id="locationInput" class="form-input" 
+                                           placeholder="City, State" autocomplete="off">
+                                    <div class="location-suggestions" id="locationSuggestions"></div>
+                                </div>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="remoteToggle">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-label">Include Distance Learning</span>
+                                </label>
+                            </div>
+
+                            <!-- Fee Range Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Annual Fee Range</label>
+                                <div class="fee-range-container">
+                                    <div class="fee-inputs">
+                                        <input type="number" id="feeMin" class="fee-input" 
+                                               placeholder="Min" min="0" max="2000000" step="10000">
+                                        <span class="fee-separator">-</span>
+                                        <input type="number" id="feeMax" class="fee-input" 
+                                               placeholder="Max" min="0" max="2000000" step="10000">
+                                    </div>
+                                    <div class="fee-presets">
+                                        <button class="fee-preset" data-min="0" data-max="100000">< ₹1L</button>
+                                        <button class="fee-preset" data-min="100000" data-max="500000">₹1-5L</button>
+                                        <button class="fee-preset" data-min="500000" data-max="1000000">₹5-10L</button>
+                                        <button class="fee-preset" data-min="1000000" data-max="2000000">> ₹10L</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Filters -->
+                            <div class="filter-group">
+                                <label class="filter-label">College Type</label>
+                                <div class="radio-group" id="collegeTypeFilters">
+                                    <label class="radio-item">
+                                        <input type="radio" name="collegeType" value="all" checked>
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">All</span>
+                                    </label>
+                                    <label class="radio-item">
+                                        <input type="radio" name="collegeType" value="government">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Government</span>
+                                    </label>
+                                    <label class="radio-item">
+                                        <input type="radio" name="collegeType" value="private">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Private</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Search Input -->
+                            <div class="filter-group">
+                                <label class="filter-label">Search Colleges</label>
+                                <div class="search-input-container">
+                                    <input type="text" id="searchInput" class="form-input search-input" 
+                                           placeholder="College name or keyword...">
+                                    <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Results Area -->
+                    <div class="results-area">
+                        <!-- Results Header -->
+                        <div class="results-header">
+                            <div class="results-info">
+                                <h2 class="results-count" id="resultsCount">
+                                    <span class="count-number">0</span> colleges found
+                                </h2>
+                                <p class="results-subtitle" id="resultsSubtitle">Based on your preferences</p>
+                            </div>
+
+                            <div class="results-controls">
+                                <div class="sort-container">
+                                    <label for="sortSelect" class="sr-only">Sort by</label>
+                                    <select id="sortSelect" class="sort-select">
+                                        <option value="match">Best Match</option>
+                                        <option value="cutoff-asc">Cutoff: Low to High</option>
+                                        <option value="cutoff-desc">Cutoff: High to Low</option>
+                                        <option value="fee-asc">Fee: Low to High</option>
+                                        <option value="fee-desc">Fee: High to Low</option>
+                                        <option value="placement">Placement Rating</option>
+                                    </select>
+                                </div>
+
+                                <button class="view-toggle" id="viewToggle" aria-label="Toggle view">
+                                    <svg class="grid-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                    <svg class="list-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                </button>
+
+                                <button class="filters-toggle mobile-only" id="mobileFiltersToggle">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
+                                    </svg>
+                                    Filters
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div class="loading-state" id="loadingState">
+                            <div class="skeleton-grid">
+                                <div class="skeleton-card" v-for="n in 6">
+                                    <div class="skeleton-header">
+                                        <div class="skeleton-line skeleton-title"></div>
+                                        <div class="skeleton-line skeleton-subtitle"></div>
+                                    </div>
+                                    <div class="skeleton-body">
+                                        <div class="skeleton-line"></div>
+                                        <div class="skeleton-line"></div>
+                                        <div class="skeleton-line skeleton-short"></div>
+                                    </div>
+                                    <div class="skeleton-footer">
+                                        <div class="skeleton-line skeleton-button"></div>
+                                        <div class="skeleton-line skeleton-button"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Grid -->
+                        <div class="results-grid" id="resultsGrid">
+                            <!-- College cards will be dynamically inserted here -->
+                        </div>
+
+                        <!-- Empty State -->
+                        <div class="empty-state" id="emptyState" style="display: none;">
+                            <div class="empty-illustration">
+                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
+                                          stroke="var(--text-muted)" stroke-width="1" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <h3 class="empty-title">No colleges found</h3>
+                            <p class="empty-message">Try adjusting your filters or search criteria to find more matches.</p>
+                            <button class="btn btn-primary" id="resetSearch">Reset Filters</button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination-container" id="paginationContainer">
+                            <div class="pagination" id="pagination">
+                                <!-- Pagination buttons will be dynamically generated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- College Detail Modal -->
+    <div class="modal-overlay" id="collegeModal">
+        <div class="modal-content college-detail-modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalCollegeName">College Name</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close modal">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body" id="modalContent">
+                <!-- Modal content will be dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Filters Overlay -->
+    <div class="mobile-filters-overlay" id="mobileFiltersOverlay">
+        <div class="mobile-filters-content">
+            <div class="mobile-filters-header">
+                <h3>Filters</h3>
+                <button class="mobile-filters-close" id="closeMobileFilters">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-filters-body">
+                <!-- Filters content will be cloned here on mobile -->
+            </div>
+            <div class="mobile-filters-footer">
+                <button class="btn btn-ghost" id="mobileResetFilters">Reset</button>
+                <button class="btn btn-primary" id="applyMobileFilters">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/javascript/search.js"></script>
+    
+    <!-- Initialize the search functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof CollegeSearch !== 'undefined') {
+                window.collegeSearchApp = new CollegeSearch();
+            }
+        });
+    </script>
+</body>
+</html>

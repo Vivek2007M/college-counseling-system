@@ -13,3 +13,5 @@ def RegisterPage(request):
 def LoginPage(request):
     return render(request,'login.html')
 
+def college_recommendation(request):
+    return render(request,'search.html')
