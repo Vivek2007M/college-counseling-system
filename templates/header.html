@@ -17,6 +17,58 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z'/></svg>">
+    
+    <style>
+        /* Ensure profile image is properly sized */
+        .profile-btn img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        /* Responsive image and SVG sizing */
+        img, svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Specific sizing for logo icon */
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Specific sizing for social icons */
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Specific sizing for contact icons */
+        .contact-info svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-btn img {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .logo-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .social-link svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Animated Background -->
@@ -51,6 +103,7 @@
                 <li><a href="{% url 'HomePage' %}#features" class="nav-link">Features</a></li>
                 <li><a href="{% url 'HomePage' %}#how-it-works" class="nav-link">How It Works</a></li>
                 <li><a href="{% url 'HomePage' %}#testimonials" class="nav-link">Success Stories</a></li>
+                <li><a href="{% url 'college_search' %}" class="nav-link">College Search</a></li>
                 <li><a href="{% url 'HomePage' %}#contact" class="nav-link">Contact</a></li>
             </ul>
 
@@ -108,6 +161,7 @@
                 <a href="#features" class="mobile-link">Features</a>
                 <a href="#how-it-works" class="mobile-link">How It Works</a>
                 <a href="#testimonials" class="mobile-link">Success Stories</a>
+                <a href="{% url 'college_search' %}" class="mobile-link">College Search</a>
                 <a href="#contact" class="mobile-link">Contact</a>
                 <div class="mobile-buttons">
                     <button class="btn btn-ghost">Login</button>

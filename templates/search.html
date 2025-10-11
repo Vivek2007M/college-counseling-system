@@ -1,371 +1,795 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Search - CollegeMatch</title>
-    <meta name="description" content="Find and compare colleges based on your preferences and percentile">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-body">
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-layer layer-1"></div>
+        <div class="bg-layer layer-2"></div>
+        <div class="bg-layer layer-3"></div>
+    </div>
     
-    <!-- Existing Project Styles -->
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- Particle System -->
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
     
-    <!-- Search Page Specific Styles -->
-    <link rel="stylesheet" href="/static/css/search.css">
-    
-    <!-- Icons from Heroicons CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/heroicons@1.0.6/outline/heroicons-outline.min.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z'/></svg>">
-</head>
-<body>
-    <!-- Include existing navbar from your project -->
-    <nav id="navbar" class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </div>
-                <span class="logo-text">CollegeMatch</span>
-            </div>
-            
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="#" class="nav-link active">Search</a></li>
-                <li><a href="#" class="nav-link">Features</a></li>
-                <li><a href="#" class="nav-link">Contact</a></li>
-            </ul>
-
-            <div class="nav-buttons">
-                <button class="btn btn-ghost">Login</button>
-                <button class="btn btn-primary">Register</button>
-            </div>
-
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Main Search Container -->
-    <main class="search-main">
-        <!-- Search Header -->
-        <div class="search-header">
-            <div class="container">
-                <h1 class="search-title">Find Your Perfect College</h1>
-                <p class="search-subtitle">Discover colleges that match your percentile, preferences, and career goals</p>
-            </div>
-        </div>
-
-        <!-- Search Content -->
-        <div class="search-content">
-            <div class="container">
-                <div class="search-layout">
-                    <!-- Filters Sidebar -->
-                    <aside class="filters-sidebar" id="filtersSidebar">
-                        <div class="filters-header">
-                            <h2>Filters</h2>
-                            <button class="filters-reset" id="resetFilters">
-                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                </svg>
-                                Reset All
-                            </button>
-                        </div>
-
-                        <div class="filters-content">
-                            <!-- Percentile Filter -->
-                            <div class="filter-group">
-                                <label class="filter-label">Percentile</label>
-                                <div class="percentile-input-group">
-                                    <div class="percentile-slider-container">
-                                        <input type="range" id="percentileSlider" class="percentile-slider" 
-                                               min="0" max="100" value="85" step="0.1">
-                                        <div class="slider-track-fill"></div>
-                                    </div>
-                                    <div class="percentile-display">
-                                        <input type="number" id="percentileInput" class="percentile-number" 
-                                               min="0" max="100" step="0.1" value="85">
-                                        <span class="percentile-suffix">%ile</span>
-                                    </div>
-                                </div>
-                                <div class="percentile-meter" id="percentileMeter">
-                                    <svg class="meter-svg" viewBox="0 0 200 120">
-                                        <path class="meter-track" d="M 20 100 A 80 80 0 0 1 180 100" 
-                                              stroke="var(--border-primary)" stroke-width="8" fill="none"/>
-                                        <path class="meter-progress" d="M 20 100 A 80 80 0 0 1 180 100" 
-                                              stroke="url(#percentileGradient)" stroke-width="8" fill="none"/>
-                                        <defs>
-                                            <linearGradient id="percentileGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" style="stop-color:var(--primary-500)"/>
-                                                <stop offset="100%" style="stop-color:var(--secondary-500)"/>
-                                            </linearGradient>
-                                        </defs>
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="auth-container" style="max-width: 1200px; grid-template-columns: 1fr;">
+            <div class="auth-form-section">
+                <div class="auth-form-container">
+                    <div class="auth-header">
+                        <h1 class="auth-title">College Search</h1>
+                        <p class="auth-subtitle">Find matching colleges by percentile, category, courses, and locations</p>
+                    </div>
+                    
+                    <!-- Search Form -->
+                    <form id="collegeSearchForm" class="auth-form" method="POST">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="percentile" class="form-label">
+                                    <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
-                                    <div class="meter-value" id="meterValue">85%</div>
-                                </div>
-                            </div>
-
-                            <!-- Stream/Branch Filter -->
-                            <div class="filter-group">
-                                <label class="filter-label">Stream/Branch</label>
-                                <div class="checkbox-group" id="streamFilters">
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" value="computer-science" checked>
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-label">Computer Science</span>
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" value="mechanical">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-label">Mechanical Engineering</span>
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" value="electrical">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-label">Electrical Engineering</span>
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" value="electronics">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-label">Electronics & Comm.</span>
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" value="civil">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-label">Civil Engineering</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Location Filter -->
-                            <div class="filter-group">
-                                <label class="filter-label">Location</label>
-                                <div class="location-input-group">
-                                    <input type="text" id="locationInput" class="form-input" 
-                                           placeholder="City, State" autocomplete="off">
-                                    <div class="location-suggestions" id="locationSuggestions"></div>
-                                </div>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="remoteToggle">
-                                    <span class="checkbox-custom"></span>
-                                    <span class="checkbox-label">Include Distance Learning</span>
+                                    Percentile
                                 </label>
+                                <input type="number" id="percentile" name="percentile" class="form-input" min="0" max="100" step="0.01" placeholder="Enter your percentile" required>
                             </div>
-
-                            <!-- Fee Range Filter -->
-                            <div class="filter-group">
-                                <label class="filter-label">Annual Fee Range</label>
-                                <div class="fee-range-container">
-                                    <div class="fee-inputs">
-                                        <input type="number" id="feeMin" class="fee-input" 
-                                               placeholder="Min" min="0" max="2000000" step="10000">
-                                        <span class="fee-separator">-</span>
-                                        <input type="number" id="feeMax" class="fee-input" 
-                                               placeholder="Max" min="0" max="2000000" step="10000">
-                                    </div>
-                                    <div class="fee-presets">
-                                        <button class="fee-preset" data-min="0" data-max="100000">< ₹1L</button>
-                                        <button class="fee-preset" data-min="100000" data-max="500000">₹1-5L</button>
-                                        <button class="fee-preset" data-min="500000" data-max="1000000">₹5-10L</button>
-                                        <button class="fee-preset" data-min="1000000" data-max="2000000">> ₹10L</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Additional Filters -->
-                            <div class="filter-group">
-                                <label class="filter-label">College Type</label>
-                                <div class="radio-group" id="collegeTypeFilters">
-                                    <label class="radio-item">
-                                        <input type="radio" name="collegeType" value="all" checked>
-                                        <span class="radio-custom"></span>
-                                        <span class="radio-label">All</span>
-                                    </label>
-                                    <label class="radio-item">
-                                        <input type="radio" name="collegeType" value="government">
-                                        <span class="radio-custom"></span>
-                                        <span class="radio-label">Government</span>
-                                    </label>
-                                    <label class="radio-item">
-                                        <input type="radio" name="collegeType" value="private">
-                                        <span class="radio-custom"></span>
-                                        <span class="radio-label">Private</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Search Input -->
-                            <div class="filter-group">
-                                <label class="filter-label">Search Colleges</label>
-                                <div class="search-input-container">
-                                    <input type="text" id="searchInput" class="form-input search-input" 
-                                           placeholder="College name or keyword...">
-                                    <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <path d="m21 21-4.35-4.35"></path>
+                            
+                            <div class="form-group">
+                                <label for="category" class="form-label">
+                                    <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
-                                </div>
+                                    Category
+                                </label>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="">Select Category</option>
+                                    <option value="General">General</option>
+                                    <option value="OBC">OBC</option>
+                                    <option value="SC">SC</option>
+                                    <option value="ST">ST</option>
+                                </select>
                             </div>
                         </div>
-                    </aside>
-
-                    <!-- Results Area -->
-                    <div class="results-area">
-                        <!-- Results Header -->
-                        <div class="results-header">
-                            <div class="results-info">
-                                <h2 class="results-count" id="resultsCount">
-                                    <span class="count-number">0</span> colleges found
-                                </h2>
-                                <p class="results-subtitle" id="resultsSubtitle">Based on your preferences</p>
-                            </div>
-
-                            <div class="results-controls">
-                                <div class="sort-container">
-                                    <label for="sortSelect" class="sr-only">Sort by</label>
-                                    <select id="sortSelect" class="sort-select">
-                                        <option value="match">Best Match</option>
-                                        <option value="cutoff-asc">Cutoff: Low to High</option>
-                                        <option value="cutoff-desc">Cutoff: High to Low</option>
-                                        <option value="fee-asc">Fee: Low to High</option>
-                                        <option value="fee-desc">Fee: High to Low</option>
-                                        <option value="placement">Placement Rating</option>
-                                    </select>
-                                </div>
-
-                                <button class="view-toggle" id="viewToggle" aria-label="Toggle view">
-                                    <svg class="grid-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <rect x="3" y="3" width="7" height="7"></rect>
-                                        <rect x="14" y="3" width="7" height="7"></rect>
-                                        <rect x="14" y="14" width="7" height="7"></rect>
-                                        <rect x="3" y="14" width="7" height="7"></rect>
-                                    </svg>
-                                    <svg class="list-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
-                                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                                    </svg>
-                                </button>
-
-                                <button class="filters-toggle mobile-only" id="mobileFiltersToggle">
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
-                                    </svg>
-                                    Filters
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Loading State -->
-                        <div class="loading-state" id="loadingState">
-                            <div class="skeleton-grid">
-                                <div class="skeleton-card" v-for="n in 6">
-                                    <div class="skeleton-header">
-                                        <div class="skeleton-line skeleton-title"></div>
-                                        <div class="skeleton-line skeleton-subtitle"></div>
-                                    </div>
-                                    <div class="skeleton-body">
-                                        <div class="skeleton-line"></div>
-                                        <div class="skeleton-line"></div>
-                                        <div class="skeleton-line skeleton-short"></div>
-                                    </div>
-                                    <div class="skeleton-footer">
-                                        <div class="skeleton-line skeleton-button"></div>
-                                        <div class="skeleton-line skeleton-button"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Results Grid -->
-                        <div class="results-grid" id="resultsGrid">
-                            <!-- College cards will be dynamically inserted here -->
-                        </div>
-
-                        <!-- Empty State -->
-                        <div class="empty-state" id="emptyState" style="display: none;">
-                            <div class="empty-illustration">
-                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
-                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
-                                          stroke="var(--text-muted)" stroke-width="1" opacity="0.5"/>
+                        
+                        <div class="form-group">
+                            <label for="course" class="form-label">
+                                <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
+                                Courses
+                            </label>
+                            <div class="select-all-container">
+                                <button type="button" id="selectAllCourses" class="select-all-btn">Select All Courses</button>
+                                <button type="button" id="clearAllCourses" class="clear-all-btn">Clear All</button>
                             </div>
-                            <h3 class="empty-title">No colleges found</h3>
-                            <p class="empty-message">Try adjusting your filters or search criteria to find more matches.</p>
-                            <button class="btn btn-primary" id="resetSearch">Reset Filters</button>
+                            <select id="course" name="course" class="form-select" multiple>
+                                <!-- Courses will be populated dynamically -->
+                            </select>
                         </div>
-
-                        <!-- Pagination -->
-                        <div class="pagination-container" id="paginationContainer">
-                            <div class="pagination" id="pagination">
-                                <!-- Pagination buttons will be dynamically generated -->
+                        
+                        <div class="form-group">
+                            <label for="cities" class="form-label">
+                                <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Cities
+                            </label>
+                            <div class="select-all-container">
+                                <button type="button" id="selectAllCities" class="select-all-btn">Select All Cities</button>
+                                <button type="button" id="clearAllCities" class="clear-all-btn">Clear All</button>
                             </div>
+                            <select id="cities" name="cities" class="form-select" multiple>
+                                <!-- Cities will be populated dynamically -->
+                            </select>
                         </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-xl" id="searchBtn">
+                            <span class="btn-text">Search Colleges</span>
+                            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
+                    
+                    <!-- Results Section -->
+                    <div id="resultsSection" class="results-section" style="display: none; margin-top: 2rem;">
+                        <h2 class="section-title">Matching Colleges</h2>
+                        <div id="resultsContainer" class="results-container">
+                            <!-- Results will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none; text-align: center; margin: 2rem 0;">
+                        <div class="spinner"></div>
+                        <p>Searching colleges...</p>
+                    </div>
+                    
+                    <!-- No Results Message -->
+                    <div id="noResultsMessage" class="no-results" style="display: none; text-align: center; margin: 2rem 0; padding: 2rem; background: var(--bg-glass); border-radius: var(--radius-lg);">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" style="margin-bottom: 1rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3>No Matching Colleges Found</h3>
+                        <p>Try adjusting your search criteria to find more results.</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+</div>
 
-    <!-- College Detail Modal -->
-    <div class="modal-overlay" id="collegeModal">
-        <div class="modal-content college-detail-modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalCollegeName">College Name</h2>
-                <button class="modal-close" id="closeModal" aria-label="Close modal">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="modal-body" id="modalContent">
-                <!-- Modal content will be dynamically populated -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile Filters Overlay -->
-    <div class="mobile-filters-overlay" id="mobileFiltersOverlay">
-        <div class="mobile-filters-content">
-            <div class="mobile-filters-header">
-                <h3>Filters</h3>
-                <button class="mobile-filters-close" id="closeMobileFilters">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="mobile-filters-body">
-                <!-- Filters content will be cloned here on mobile -->
-            </div>
-            <div class="mobile-filters-footer">
-                <button class="btn btn-ghost" id="mobileResetFilters">Reset</button>
-                <button class="btn btn-primary" id="applyMobileFilters">Apply Filters</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script src="/static/javascript/search.js"></script>
+<!-- Custom Styles for College Search -->
+<style>
+    /* Profile image sizing fix */
+    .profile-btn img {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
     
-    <!-- Initialize the search functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof CollegeSearch !== 'undefined') {
-                window.collegeSearchApp = new CollegeSearch();
+    /* Ensure all images and SVGs have proper sizing */
+    img, svg {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Specific sizing for label icons */
+    .label-icon {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        margin-right: 0.5rem;
+        flex-shrink: 0;
+    }
+    
+    /* Specific sizing for button icons */
+    .btn-icon {
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+        flex-shrink: 0;
+    }
+    
+    /* Select All / Clear All buttons container */
+    .select-all-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    /* Select All / Clear All buttons */
+    .select-all-btn,
+    .clear-all-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-primary);
+        background: var(--bg-glass);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+    }
+    
+    .select-all-btn:hover,
+    .clear-all-btn:hover {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: var(--primary-500);
+    }
+    
+    /* Improved multi-select styling */
+    .form-select[multiple] {
+        height: 200px;
+        padding: 0.5rem;
+        background: var(--bg-glass);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        overflow-y: auto;
+    }
+    
+    .form-select[multiple]:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .form-select[multiple] option {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        margin: 2px 0;
+    }
+    
+    .form-select[multiple] option:checked {
+        background: var(--gradient-primary);
+        color: white;
+    }
+    
+    /* Table Container with Horizontal Scrolling */
+    .table-container {
+        overflow-x: auto;
+        border-radius: var(--radius-lg);
+        margin-top: 1rem;
+        box-shadow: var(--shadow-lg);
+        background: var(--bg-glass);
+        border: 1px solid var(--border-primary);
+    }
+    
+    /* Results Table */
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px; /* Ensure table has minimum width */
+        background: var(--bg-glass);
+    }
+    
+    .results-table th {
+        background: var(--gradient-primary);
+        color: white;
+        text-align: left;
+        padding: 1rem;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+    }
+    
+    .results-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-primary);
+        color: var(--text-secondary);
+    }
+    
+    .results-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .results-table tr:hover {
+        background: var(--bg-glass-hover);
+    }
+    
+    /* Cards Layout */
+    .results-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .result-card {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        transition: all 0.3s var(--ease-smooth);
+    }
+    
+    .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-glow);
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-detail {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .card-label {
+        color: var(--text-muted);
+    }
+    
+    .card-value {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid var(--primary-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .results-table {
+            font-size: 0.8rem;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .results-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        /* Ensure profile image is responsive on mobile */
+        .profile-btn img {
+            width: 32px;
+            height: 32px;
+        }
+        
+        /* Adjust icon sizes for mobile */
+        .label-icon {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .select-all-container {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .select-all-btn,
+        .clear-all-btn {
+            width: 100%;
+        }
+        
+        /* Form adjustments for mobile */
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    /* Form row adjustments */
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+    
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-primary);
+        background: var(--bg-glass);
+        color: var(--text-primary); /* Ensure text is visible */
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .form-select[multiple] {
+        height: 200px;
+        padding: 0.5rem;
+        background: var(--bg-glass);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        overflow-y: auto;
+    }
+    
+    .form-select[multiple]:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .form-select[multiple] option {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        margin: 2px 0;
+        background: var(--bg-secondary); /* Set background for options */
+        color: var(--text-primary); /* Ensure option text is visible */
+    }
+    
+    .form-select[multiple] option:checked {
+        background: var(--gradient-primary);
+        color: white;
+    }
+    
+    /* Ensure single select dropdowns have proper text color */
+    .form-select:not([multiple]) {
+        color: var(--text-primary);
+        background: var(--bg-glass);
+    }
+    
+    /* Fix for dropdown arrow color */
+    .form-select:not([multiple]) {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+    
+    /* Ensure option elements have proper contrast */
+    option {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+    
+    option:checked {
+        background: var(--gradient-primary);
+        color: white;
+    }
+    
+    /* Button styles */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s var(--ease-smooth);
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    
+    .btn-primary {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: var(--shadow-glow);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(14, 165, 233, 0.4);
+    }
+    
+    .btn-xl {
+        padding: 1.25rem 2.5rem;
+        font-size: 1.125rem;
+    }
+    
+    /* Auth section styling */
+    .auth-main {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+    }
+    
+    .auth-container {
+        display: grid;
+        gap: 2rem;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    .auth-form-section {
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-xl);
+        padding: 2.5rem;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .auth-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        background: var(--gradient-text);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .auth-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .auth-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    /* Section title */
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    /* Results container */
+    .results-container {
+        margin-top: 1rem;
+    }
+</style>
+
+<!-- JavaScript for College Search -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Populate courses dropdown with all unique courses from dataset
+        const courseSelect = document.getElementById('course');
+        
+        // Read courses from the generated file
+        fetch('/static/data/courses.txt')
+            .then(response => response.text())
+            .then(text => {
+                const courses = text.split('\n').filter(course => course.trim() !== '');
+                courses.forEach(course => {
+                    if (course.trim() !== '') {
+                        const option = document.createElement('option');
+                        option.value = course.trim();
+                        option.textContent = course.trim();
+                        courseSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading courses:', error);
+                // Fallback to hardcoded courses if file loading fails
+                const fallbackCourses = [
+                    "Civil Engineering", "Computer Science and Engineering", "Electrical Engineering", 
+                    "Electronics and Telecommunication Engg", "Mechanical Engineering", 
+                    "Information Technology", "Chemical Engineering", "Computer Engineering",
+                    "Instrumentation Engineering", "Food Technology", "Oil and Paints Technology",
+                    "Paper and Pulp Technology", "Petro Chemical Engineering", 
+                    "Electrical Engg[Electronics and Power]", "Artificial Intelligence (AI) and Data Science",
+                    "Computer Science and Engineering (IoT)", 
+                    "Computer Science and Engineering(Artificial Intelligence and Machine Learning)",
+                    "Artificial Intelligence and Data Science", "Textile Engineering / Technology",
+                    "Computer Science and Information Technology"
+                ];
+                fallbackCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            });
+        
+        // Populate cities dropdown with all unique cities
+        const citiesSelect = document.getElementById('cities');
+        
+        // Read cities from the generated file
+        fetch('/static/data/cities.txt')
+            .then(response => response.text())
+            .then(text => {
+                const cities = text.split('\n').filter(city => city.trim() !== '');
+                cities.forEach(city => {
+                    if (city.trim() !== '') {
+                        const option = document.createElement('option');
+                        option.value = city.trim();
+                        option.textContent = city.trim();
+                        citiesSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading cities:', error);
+                // Fallback to hardcoded cities if file loading fails
+                const fallbackCities = [
+                    "Delhi", "Mumbai", "Bangalore", "Chennai", "Kolkata", "Hyderabad", "Pune", 
+                    "Ahmedabad", "Jaipur", "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", 
+                    "Bhopal", "Visakhapatnam", "Patna", "Vadodara", "Ghaziabad", "Ludhiana",
+                    "Amravati", "Nashik", "Aurangabad", "Solapur", "Navi Mumbai", "Thiruvananthapuram",
+                    "Bhubaneswar", "Coimbatore", "Guwahati", "Chandigarh", "Tiruchirappalli"
+                ];
+                fallbackCities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citiesSelect.appendChild(option);
+                });
+            });
+        
+        // Add Select All / Clear All functionality for courses
+        const selectAllCoursesBtn = document.getElementById('selectAllCourses');
+        const clearAllCoursesBtn = document.getElementById('clearAllCourses');
+        
+        selectAllCoursesBtn.addEventListener('click', function() {
+            for (let i = 0; i < courseSelect.options.length; i++) {
+                courseSelect.options[i].selected = true;
             }
         });
-    </script>
-</body>
-</html>
+        
+        clearAllCoursesBtn.addEventListener('click', function() {
+            for (let i = 0; i < courseSelect.options.length; i++) {
+                courseSelect.options[i].selected = false;
+            }
+        });
+        
+        // Add Select All / Clear All functionality for cities
+        const selectAllCitiesBtn = document.getElementById('selectAllCities');
+        const clearAllCitiesBtn = document.getElementById('clearAllCities');
+        
+        selectAllCitiesBtn.addEventListener('click', function() {
+            for (let i = 0; i < citiesSelect.options.length; i++) {
+                citiesSelect.options[i].selected = true;
+            }
+        });
+        
+        clearAllCitiesBtn.addEventListener('click', function() {
+            for (let i = 0; i < citiesSelect.options.length; i++) {
+                citiesSelect.options[i].selected = false;
+            }
+        });
+        
+        // Handle form submission
+        const searchForm = document.getElementById('collegeSearchForm');
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(searchForm);
+            
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('noResultsMessage').style.display = 'none';
+            
+            // Disable search button
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.querySelector('.btn-text').textContent = 'Searching...';
+            
+            // Send AJAX request
+            fetch('{% url "college_recommendation:search_colleges" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').style.display = 'none';
+                
+                // Enable search button
+                searchBtn.disabled = false;
+                searchBtn.querySelector('.btn-text').textContent = 'Search Colleges';
+                
+                if (data.success && data.colleges.length > 0) {
+                    // Display results
+                    displayResults(data.colleges);
+                    document.getElementById('resultsSection').style.display = 'block';
+                } else {
+                    // Show no results message
+                    document.getElementById('noResultsMessage').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').style.display = 'none';
+                
+                // Enable search button
+                searchBtn.disabled = false;
+                searchBtn.querySelector('.btn-text').textContent = 'Search Colleges';
+                
+                // Show error message
+                alert('An error occurred while searching. Please try again.');
+            });
+        });
+        
+        // Function to display results
+        function displayResults(colleges) {
+            const container = document.getElementById('resultsContainer');
+            
+            // Create table view with horizontal scrolling container
+            let tableHTML = `
+                <div class="table-container">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>College Code</th>
+                                <th>College Name</th>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Category</th>
+                                <th>Merit Rank</th>
+                                <th>Percentile</th>
+                                <th>City</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            colleges.forEach(college => {
+                tableHTML += `
+                    <tr>
+                        <td>${college.college_code}</td>
+                        <td>${college.college_name}</td>
+                        <td>${college.course_code}</td>
+                        <td>${college.course_name}</td>
+                        <td>${college.category}</td>
+                        <td>${college.merit_rank}</td>
+                        <td>${college.percentile}</td>
+                        <td>${college.city}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+    });
+</script>
+{% endblock %}

@@ -43,7 +43,7 @@ def register_view(request):
 
         login(request, user)
         messages.success(request, "Registration successful. Welcome!")
-        return redirect('profile')
+        return redirect('HomePage')
     
     return render(request, 'register.html')
 
@@ -67,7 +67,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f"Welcome back, {user.get_short_name() or user.username}!")
-            return redirect('profile')
+            return redirect('HomePage')
         else:
             messages.error(request, "Invalid email or password.")
             return redirect('login_page')
@@ -90,6 +90,4 @@ def logout_view(request):
 
     logout(request)
     messages.info(request, "You have been logged out.")
-    return redirect('home')
-
-
+    return redirect('HomePage')

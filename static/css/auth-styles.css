@@ -7,6 +7,37 @@
     overflow-x: hidden;
 }
 
+/* ===== GLOBAL IMAGE AND SVG STYLING ===== */
+/* Ensure all images and SVGs are responsive and properly sized */
+img, svg {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.profile-btn img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Specific sizing for form label icons */
+.label-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Specific sizing for button icons */
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
 /* Auth navbar */
 .auth-navbar {
     background: rgba(10, 15, 28, 0.95);
@@ -892,6 +923,22 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 0.75rem;
     }
+    
+    /* Responsive image and SVG sizing */
+    .profile-btn img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .label-icon {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .btn-icon {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -998,21 +1045,20 @@
         padding: 1.5rem;
     }
     
-    .benefit-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.75rem;
+    /* Responsive image and SVG sizing */
+    .profile-btn img {
+        width: 32px;
+        height: 32px;
     }
     
-    .success-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.5rem;
+    .label-icon {
+        width: 14px;
+        height: 14px;
     }
     
-    .modal-content {
-        width: 95%;
-        padding: 1rem;
+    .btn-icon {
+        width: 18px;
+        height: 18px;
     }
 }
 
@@ -1084,6 +1130,14 @@
 
 /* ===== ACCESSIBILITY ===== */
 @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
     .form-input,
     .form-select,
     .stat-item,

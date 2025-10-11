@@ -2,6 +2,7 @@
 .messages-block {
     margin-bottom: 1.5rem;
 }
+
 .alert {
     font-size: 1.18rem;
     font-weight: 800;
@@ -13,33 +14,91 @@
     letter-spacing: 0.01em;
     transition: background 0.2s, color 0.2s;
 }
+
 .alert.error, .alert.danger, .alert-error, .alert-danger {
     background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
     color: #fff;
     border: 2px solid #b91c1c;
 }
+
 .alert.success, .alert-success {
     background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
     color: #fff;
     border: 2px solid #16a34a;
 }
+
 .alert.info, .alert-info {
     background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%);
     color: #fff;
     border: 2px solid #2563eb;
 }
+
 .alert.warning, .alert-warning {
     background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
     color: #fff;
     border: 2px solid #f59e0b;
 }
+
+/* ===== GLOBAL IMAGE AND SVG STYLING ===== */
+/* Ensure all images and SVGs are responsive and properly sized */
+img, svg {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+/* Specific sizing for label icons */
+.label-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Specific sizing for button icons */
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Specific sizing for logo icons */
+.logo-icon svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+/* Specific sizing for social icons */
+.social-link svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Specific sizing for contact icons */
+.contact-info svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
 /* ===== PROFILE DROPDOWN ===== */
 .profile-area {
     position: relative;
 }
+
 .profile-btn {
     /* already styled above */
     z-index: 10;
+}
+
+.profile-btn img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 /* ===== PREMIUM PROFILE DROPDOWN ===== */
@@ -63,13 +122,16 @@
     transition: box-shadow 0.2s, background 0.2s;
     overflow: visible;
 }
+
 .profile-dropdown.active {
     display: block;
 }
+
 @keyframes dropdownFadeIn {
     0% { opacity: 0; transform: translateY(-32px) scale(0.96); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
+
 .profile-dropdown .profile-name {
     font-size: 1.25rem;
     font-weight: 800;
@@ -77,6 +139,7 @@
     margin-bottom: 0.2em;
     letter-spacing: 0.01em;
 }
+
 .profile-dropdown .profile-email {
     color: var(--text-secondary);
     font-size: 1.08rem;
@@ -84,12 +147,14 @@
     word-break: break-all;
     opacity: 0.97;
 }
+
 .profile-dropdown .profile-phone {
     color: var(--text-muted);
     font-size: 1.04rem;
     margin-bottom: 1.1em;
     opacity: 0.88;
 }
+
 .profile-dropdown .profile-divider {
     height: 1.5px;
     background: linear-gradient(90deg, #0ea5e9 0%, #22c55e 100%);
@@ -98,6 +163,7 @@
     opacity: 0.18;
     border-radius: 2px;
 }
+
 .profile-dropdown a {
     display: block;
     color: var(--primary-400);
@@ -111,15 +177,18 @@
     transition: color 0.18s, background 0.18s;
     text-align: left;
 }
+
 .profile-dropdown a:hover {
     color: #fff;
     background: var(--gradient-primary);
     text-decoration: none;
 }
+
 .profile-dropdown form {
     margin-top: 0.7rem;
     text-align: left;
 }
+
 .profile-dropdown button[type="submit"] {
     width: 100%;
     padding: 0.9em 0;
@@ -135,11 +204,13 @@
     margin-top: 0.5em;
     letter-spacing: 0.01em;
 }
+
 .profile-dropdown button[type="submit"]:hover {
     background: var(--gradient-secondary);
     color: #fff;
     transform: translateY(-2px) scale(1.04);
 }
+
 /* ===== ADVANCED CSS RESET ===== */
 *, *::before, *::after {
     box-sizing: border-box;
