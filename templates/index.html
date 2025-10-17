@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% block content %}
 
@@ -36,22 +35,22 @@
             <div class="hero-stats" data-aos="fade-up" data-aos-delay="800">
                 <div class="stat-card">
                     <div class="stat-icon">🏛️</div>
-                    <div class="stat-number" data-count="2500">0</div>
+                    <div class="stat-number" data-count="{{ college_count }}">{{ college_count }}</div>
                     <div class="stat-label">Colleges</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">🎯</div>
-                    <div class="stat-number" data-count="99.2">0</div>
+                    <div class="stat-number" data-count="99.2">99.2</div>
                     <div class="stat-label">% Accuracy</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">👨‍🎓</div>
-                    <div class="stat-number" data-count="50000">0</div>
+                    <div class="stat-number" data-count="{{ student_count }}">{{ student_count }}</div>
                     <div class="stat-label">Students</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">⚡</div>
-                    <div class="stat-number" data-count="3">0</div>
+                    <div class="stat-number" data-count="{{ success_results_count }}">{{ success_results_count }}</div>
                     <div class="stat-label">Sec Results</div>
                 </div>
             </div>
@@ -329,4 +328,4 @@
             </div>
         </div>
     </section>
-{% endblock  %}
+{% endblock %}

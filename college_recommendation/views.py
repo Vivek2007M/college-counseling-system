@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-import csv
-import os
-from django.conf import settings
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
-
-# Create your views here.
+from .models import College
+import csv
+import io
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter, A4, landscape
 
 @login_required
 def search_colleges(request):
@@ -31,10 +34,10 @@ def search_colleges(request):
                 cities = []  # Empty list means all cities
             
             # Define percentile range (±5)
-            min_percentile = percentile - 5
-            max_percentile = percentile + 5
+            min_percentile = percentile - 10
+            max_percentile = percentile + 10
             
-            # Map user-friendly category names to CSV category codes
+            # Map user-friendly category names to database category codes
             category_mapping = {
                 'General': ['GOPENS', 'GOPENH', 'GOPENO'],
                 'OBC': ['GOBCS', 'GOBCH', 'GOBCO', 'GSEBCS', 'GSEBCH', 'GSEBCO'],
@@ -45,58 +48,49 @@ def search_colleges(request):
             # Get the list of category codes to match
             category_codes = category_mapping.get(category, [])
             
-            # Path to the CSV file (using the correct colleges.csv file)
-            csv_path = os.path.join(settings.BASE_DIR, 'static', 'data', 'colleges.csv')
+            # Build the database query
+            colleges_query = College.objects.all()
             
-            # Check if CSV file exists
-            if not os.path.exists(csv_path):
-                return JsonResponse({
-                    'success': False,
-                    'error': 'College data not found'
-                })
+            # Filter by category if specified
+            if category and category_codes:
+                colleges_query = colleges_query.filter(category__in=category_codes)
             
-            # Read and filter CSV data
+            # Filter by percentile range
+            colleges_query = colleges_query.filter(percentile__gte=min_percentile, percentile__lte=max_percentile)
+            
+            # Filter by courses if specific courses are selected
+            if courses:
+                colleges_query = colleges_query.filter(course_name__in=courses)
+            
+            # Filter by cities if specific cities are selected
+            if cities:
+                colleges_query = colleges_query.filter(city__in=cities)
+            
+            # Execute the query and convert to list of dictionaries
             matching_colleges = []
-            
-            with open(csv_path, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                
-                for row in reader:
-                    # Filter by category - match any of the category codes
-                    if category and row['category'] not in category_codes:
-                        continue
-                    
-                    # Filter by percentile range
-                    try:
-                        college_percentile = float(row['percentile'])
-                        if college_percentile < min_percentile or college_percentile > max_percentile:
-                            continue
-                    except ValueError:
-                        # Skip rows with invalid percentile values
-                        continue
-                    
-                    # Filter by courses if specific courses are selected
-                    if courses and row['course_name'] not in courses:
-                        continue
-                    
-                    # Filter by cities if specific cities are selected
-                    if cities and row['city'] not in cities:
-                        continue
-                    
-                    # Add matching college to results
-                    matching_colleges.append({
-                        'college_code': row['college_code'],
-                        'college_name': row['college_name'],
-                        'course_code': row['course_code'],
-                        'course_name': row['course_name'],
-                        'category': row['category'],
-                        'merit_rank': row['merit_rank'],
-                        'percentile': row['percentile'],
-                        'city': row['city']
-                    })
+            for college in colleges_query:
+                matching_colleges.append({
+                    'college_code': college.college_code,
+                    'college_name': college.college_name,
+                    'course_code': college.course_code,
+                    'course_name': college.course_name,
+                    'category': college.category,
+                    'merit_rank': college.merit_rank,
+                    'percentile': str(college.percentile),  # Convert to string for JSON serialization
+                    'city': college.city
+                })
             
             # Sort colleges by percentile (descending) and then by merit rank (ascending)
             matching_colleges.sort(key=lambda x: (-float(x['percentile']), int(x['merit_rank'])))
+            
+            # Store results in session for download
+            request.session['search_results'] = matching_colleges
+            request.session['search_criteria'] = {
+                'percentile': percentile,
+                'category': category,
+                'courses': courses,
+                'cities': cities
+            }
             
             # Return JSON response
             return JsonResponse({
@@ -116,3 +110,242 @@ def search_colleges(request):
         'success': False,
         'error': 'Invalid request method'
     })
+
+@login_required
+def download_colleges(request):
+    """
+    Download college search results as CSV file.
+    """
+    # Get results from session
+    results = request.session.get('search_results', [])
+    criteria = request.session.get('search_criteria', {})
+    
+    if not results:
+        return HttpResponse(b"No results to download.", content_type="text/plain")
+    
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="college_recommendations.csv"'
+    
+    # Create CSV writer
+    writer = csv.writer(response)
+    
+    # Write header
+    writer.writerow([
+        'College Code', 'College Name', 'Course Code', 'Course Name', 
+        'Category', 'Merit Rank', 'Percentile', 'City'
+    ])
+    
+    # Write data rows
+    for college in results:
+        writer.writerow([
+            college['college_code'],
+            college['college_name'],
+            college['course_code'],
+            college['course_name'],
+            college['category'],
+            college['merit_rank'],
+            college['percentile'],
+            college['city']
+        ])
+    
+    return response
+
+@login_required
+def download_colleges_pdf(request):
+    """
+    Download college search results as PDF file.
+    """
+    # Get results from session
+    results = request.session.get('search_results', [])
+    criteria = request.session.get('search_criteria', {})
+    
+    if not results:
+        return HttpResponse(b"No results to download.", content_type="text/plain")
+    
+    # Create PDF response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="college_recommendations.pdf"'
+    
+    # Create PDF document with adjusted margins for better table display
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, 
+        pagesize=landscape(A4),  # Use landscape orientation
+        rightMargin=10,  # Further reduced margins
+        leftMargin=10,   # Further reduced margins
+        topMargin=10,    # Further reduced margins
+        bottomMargin=10   # Further reduced margins
+    )
+    elements = []
+    
+    # Get styles and create custom styles
+    styles = getSampleStyleSheet()
+    
+    # Title style
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=20,
+        spaceAfter=25,
+        alignment=1,  # Center alignment
+        textColor=colors.HexColor('#1E40AF'),  # Professional blue color
+        fontName='Helvetica-Bold'
+    )
+    
+    # Subtitle style
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Heading2'],
+        fontSize=12,
+        spaceAfter=20,
+        alignment=1,  # Center alignment
+        textColor=colors.HexColor('#4B5563'),  # Gray color
+        fontName='Helvetica'
+    )
+    
+    # Criteria style
+    criteria_style = ParagraphStyle(
+        'Criteria',
+        parent=styles['Normal'],
+        fontSize=10,
+        spaceAfter=25,
+        leading=12,  # Line spacing
+        textColor=colors.HexColor('#1F2937'),  # Dark gray
+        fontName='Helvetica'
+    )
+    
+    # Section header style
+    section_style = ParagraphStyle(
+        'SectionHeader',
+        parent=styles['Heading3'],
+        fontSize=12,
+        spaceAfter=15,
+        textColor=colors.HexColor('#1E40AF'),  # Professional blue
+        fontName='Helvetica-Bold'
+    )
+    
+    # College card style
+    card_style = ParagraphStyle(
+        'CardStyle',
+        parent=styles['Normal'],
+        fontSize=8,
+        spaceAfter=10,
+        leading=10,
+        textColor=colors.HexColor('#1F2937'),
+        fontName='Helvetica'
+    )
+    
+    # Add title
+    title = Paragraph("College Recommendation Report", title_style)
+    elements.append(title)
+    
+    # Add subtitle with date
+    from datetime import datetime
+    subtitle = Paragraph(f"Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", subtitle_style)
+    elements.append(subtitle)
+    
+    # Add search criteria with better formatting
+    if criteria:
+        criteria_parts = []
+        if 'percentile' in criteria:
+            criteria_parts.append(f"<b>Percentile:</b> {criteria['percentile']}")
+        if 'category' in criteria:
+            criteria_parts.append(f"<b>Category:</b> {criteria['category']}")
+        if criteria.get('courses'):
+            courses_list = ', '.join(criteria['courses'])
+            criteria_parts.append(f"<b>Courses:</b> {courses_list}")
+        if criteria.get('cities'):
+            cities_list = ', '.join(criteria['cities'])
+            criteria_parts.append(f"<b>Cities:</b> {cities_list}")
+        
+        criteria_text = "<br/>".join(criteria_parts)
+        criteria_paragraph = Paragraph(criteria_text, criteria_style)
+        elements.append(criteria_paragraph)
+    
+    # Add section header
+    section_header = Paragraph(f"Matching Colleges ({len(results)} found)", section_style)
+    elements.append(section_header)
+    
+    # Create table data with headers
+    table_data = [
+        ['College Code', 'College Name', 'Course Name', 'Category', 'Merit Rank', 'Percentile', 'City']
+    ]
+    
+    # Add data rows
+    for i, college in enumerate(results):
+        table_data.append([
+            college['college_code'],
+            college['college_name'],
+            college['course_name'],
+            college['category'],
+            str(college['merit_rank']),
+            college['percentile'],
+            college['city']
+        ])
+    
+    # Create table with further adjusted column widths to fully show City column
+    table = Table(
+        table_data, 
+        colWidths=[25, 370, 260, 30, 30, 40, 130],  # Further reduced other columns, maximized City column
+        repeatRows=1,  # Repeat header on each page
+        hAlign='LEFT'  # Align table to left
+    )
+    
+    # Apply table styling with forced text wrapping
+    table.setStyle(TableStyle([
+        # Header row styling
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E40AF')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        
+        # Data rows styling - focus on text fitting
+        ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 6),  # Very small font for maximum fit
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#E5E7EB')),
+        
+        # Alternate row colors
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white]),
+        
+        # Minimal padding for maximum text space
+        ('TOPPADDING', (0, 1), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 2),
+        
+        # Specific column alignments
+        ('ALIGN', (1, 1), (1, -1), 'LEFT'),  # College name
+        ('ALIGN', (2, 1), (2, -1), 'LEFT'),  # Course name
+        ('ALIGN', (6, 1), (6, -1), 'LEFT'),  # City
+        ('ALIGN', (0, 1), (0, -1), 'CENTER'),  # College code
+        ('ALIGN', (3, 1), (5, -1), 'CENTER'),  # Category, Merit Rank, Percentile
+        
+        # Force text wrapping and prevent single line overflow
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('WORDWRAP', (0, 0), (-1, -1)),
+        ('LEADING', (0, 1), (-1, -1), 7),
+        
+        # Force column-specific wrapping
+        ('WORDWRAP', (1, 1), (1, -1)),  # College name
+        ('WORDWRAP', (2, 1), (2, -1)),  # Course name
+        
+        # Ensure proper alignment
+        ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
+        ('ALIGN', (0, 0), (0, 0), 'CENTER'),  # Header center alignment
+        ('ALIGN', (3, 1), (5, -1), 'CENTER'),  # Numerical columns center alignment
+    ]))
+    
+    elements.append(table)
+    
+    # Build PDF with proper page break handling
+    doc.build(elements)
+    
+    # Get PDF content
+    pdf_content = buffer.getvalue()
+    buffer.close()
+    
+    response.write(pdf_content)
+    return response

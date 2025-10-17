@@ -97,7 +97,23 @@
                     
                     <!-- Results Section -->
                     <div id="resultsSection" class="results-section" style="display: none; margin-top: 2rem;">
-                        <h2 class="section-title">Matching Colleges</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h2 class="section-title">Matching Colleges</h2>
+                            <div id="downloadButtons" style="display: none;">
+                                <button id="downloadCsvBtn" class="btn btn-primary" style="margin-right: 10px;">
+                                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Download CSV
+                                </button>
+                                <button id="downloadPdfBtn" class="btn btn-primary">
+                                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Download PDF
+                                </button>
+                            </div>
+                        </div>
                         <div id="resultsContainer" class="results-container">
                             <!-- Results will be populated here -->
                         </div>
@@ -566,8 +582,7 @@
         font-size: 1.75rem;
         font-weight: 700;
         color: var(--text-primary);
-        margin-bottom: 1.5rem;
-        text-align: center;
+        margin-bottom: 0;
     }
     
     /* Results container */
@@ -725,9 +740,13 @@
                     // Display results
                     displayResults(data.colleges);
                     document.getElementById('resultsSection').style.display = 'block';
+                    // Show download buttons
+                    document.getElementById('downloadButtons').style.display = 'flex';
                 } else {
                     // Show no results message
                     document.getElementById('noResultsMessage').style.display = 'block';
+                    // Hide download buttons
+                    document.getElementById('downloadButtons').style.display = 'none';
                 }
             })
             .catch(error => {
@@ -742,6 +761,16 @@
                 // Show error message
                 alert('An error occurred while searching. Please try again.');
             });
+        });
+        
+        // Handle CSV download button click
+        document.getElementById('downloadCsvBtn').addEventListener('click', function() {
+            window.location.href = '{% url "college_recommendation:download_colleges" %}';
+        });
+        
+        // Handle PDF download button click
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            window.location.href = '{% url "college_recommendation:download_colleges_pdf" %}';
         });
         
         // Function to display results
