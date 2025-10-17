@@ -269,7 +269,7 @@ def download_colleges_pdf(request):
     
     # Create table data with headers
     table_data = [
-        ['College Code', 'College Name', 'Course Name', 'Category', 'Merit Rank', 'Percentile', 'City']
+        ['College Code', 'College Name', 'Course Name', 'Ctg.', 'Rank', 'Percentile', 'City']
     ]
     
     # Add data rows
